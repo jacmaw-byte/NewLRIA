@@ -1,0 +1,39 @@
+#version 430 core
+
+layout(binding = 1) uniform sampler2D occlusion;
+
+// Each thread handles one vertical column (X coordinate)
+layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
+
+// Write-only 2D RGBA texture
+layout (rgba8, binding = 0) uniform writeonly image2D outputImage;
+
+void main()
+{
+    int x = int(gl_GlobalInvocationID.x);
+    ivec2 size = imageSize(outputImage);
+
+    // Guard against out-of-bounds threads
+    if (x >= size.x)
+    return;
+
+    // Start with maximum light at the top of the screen (y = size.y - 1)
+    float currentLight = 1.0f;
+
+    // Loop downwards from top to bottom
+    for (int y = size.y - 1; y >= 0; --y) {
+        ivec2 pixel = ivec2(x, y);
+
+        // Sample occlusion texture (using texelFetch for exact pixel lookup)
+        vec4 occlSample = texelFetch(occlusion, pixel, 0);
+        bool occlusive = occlSample.r > 0.0f;
+
+        if (occlusive) {
+            // Hit a solid block: kill the light instantly (or apply a sharp drop)
+            currentLight -= 0.05f;
+        }
+
+        // Store the result for this pixel
+        imageStore(outputImage, pixel, vec4(currentLight, currentLight, currentLight, 1.0f));
+    }
+}
