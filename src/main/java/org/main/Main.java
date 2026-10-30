@@ -1,6 +1,5 @@
 package org.main;
-import org.gameManager.GameManager;
-import org.gameManager.renderManager.RenderManager;
+import org.game.GameManager;
 
 public class Main {
     public static void main(String[] args){

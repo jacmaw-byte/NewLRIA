@@ -18,9 +18,22 @@ public class ColourA {
         this.a = (byte) a;
     }
 
+    public String to_string(){
+        return "r: " + r() + " g: " + g() + " b: " + b();
+    }
+
+    public Colour rgb(){
+        return new Colour(r(), g(), b());
+    }
+
     public int r(){ return Byte.toUnsignedInt(r); }
     public int g(){ return Byte.toUnsignedInt(g); }
     public int b(){ return Byte.toUnsignedInt(b); }
     public int a(){ return Byte.toUnsignedInt(a); }
+
+    public byte r_raw(){ return r; }
+    public byte g_raw(){ return g; }
+    public byte b_raw(){ return b; }
+    public byte a_raw(){ return a; }
 
 }
