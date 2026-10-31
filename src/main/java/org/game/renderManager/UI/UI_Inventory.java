@@ -1,7 +1,7 @@
 package org.game.renderManager.UI;
 
-import org.game.player.inventory.Inventory;
-import org.game.player.inventory.Item;
+import org.game.player.server.inventory.Inventory;
+import org.game.player.server.inventory.Item;
 import org.game.renderManager.image.Sprite;
 
 import java.util.ArrayList;

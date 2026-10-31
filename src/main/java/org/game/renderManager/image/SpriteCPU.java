@@ -1,7 +1,7 @@
 package org.game.renderManager.image;
 
-import org.game.GameManager;
 import org.game.renderManager.PracticalScreen;
+import org.game.renderManager.Texture;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -33,6 +33,7 @@ public class SpriteCPU {
             STBImage.stbi_set_flip_vertically_on_load(true);
             image_raw = STBImage.stbi_load(path, width, height, channels, desired_channels);
             STBImage.stbi_set_flip_vertically_on_load(false);
+
             if (image_raw == null){
                 throw new RuntimeException("Failed to load image");
             }
@@ -67,8 +68,7 @@ public class SpriteCPU {
         this.flipped_x = flipped_x;
     }
 
-    public void draw(int draw_x, int draw_y){
-        PracticalScreen screen = GameManager.get_render_manager().get_screen();
+    public void draw(int draw_x, int draw_y, Texture surface){
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -78,7 +78,7 @@ public class SpriteCPU {
                 ColourA colour = get_pixel(sprite_x, y);
 
                 if (colour.a() > 0)
-                    screen.set_blended_pixel(draw_x + x, draw_y + y, colour);
+                    surface.set_pixel(draw_x + x, draw_y + y, colour);
             }
         }
     }

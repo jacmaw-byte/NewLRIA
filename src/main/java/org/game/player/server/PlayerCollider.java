@@ -1,10 +1,12 @@
-package org.game.player;
+package org.game.player.server;
 
-import org.game.GameManager;
 import org.game.cell.Cell;
 import org.game.chunkManager.ChunkManager;
+import org.game.player.client.ClientPlayer;
 import org.game.renderManager.Texture;
 import org.game.renderManager.image.SpriteCPU;
+import org.game.server.client.Client;
+import org.game.server.client.ClientChunkManager;
 import org.types.ColourA;
 import org.joml.Vector2f;
 
@@ -35,8 +37,9 @@ public class PlayerCollider {
     /** Keeps the position just inside a pixel when blocked while moving in + direction. */
     private static final float PIXEL_EDGE = 0.999f;
 
-    private final Player player;
-    private final ChunkManager chunk_manager;
+    private final ClientPlayer player;
+    private final ClientChunkManager chunk_manager;
+    private SpriteCPU sprite;
 
     // facing right (not flipped)
     private int[] outline_right_x = new int[0];
@@ -56,9 +59,12 @@ public class PlayerCollider {
     private boolean hit_x;
     private boolean hit_y;
 
-    public PlayerCollider(Player player) {
+    public PlayerCollider(ClientPlayer player, ClientChunkManager chunk_manager) {
         this.player = player;
-        this.chunk_manager = GameManager.get_chunk_manager();
+        this.chunk_manager = chunk_manager;
+
+        sprite = new SpriteCPU("assets/sprites/Player.png");
+        sprite = sprite.slice();
         generate_offsets();
     }
 
@@ -97,7 +103,7 @@ public class PlayerCollider {
 
     /** Returns {xs, ys}. If mirror is true, the sprite is flipped horizontally, exactly as draw() does. */
     private int[][] build_outline(boolean mirror) {
-        SpriteCPU s = player.get_sprite();
+        SpriteCPU s = sprite;
         List<int[]> outline = new ArrayList<>();
 
         for (int x = 0; x < s.width; x++) {
@@ -220,7 +226,7 @@ public class PlayerCollider {
     }
 
     public void debug_print_bounds() {
-        SpriteCPU s = player.get_sprite();
+        SpriteCPU s = sprite;
 
         int min_x = Integer.MAX_VALUE, max_x = Integer.MIN_VALUE;
         for (int x = 0; x < s.width; x++)

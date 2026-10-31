@@ -1,7 +1,7 @@
-package org.game.player.inventory;
+package org.game.player.server.inventory;
 
 import org.game.input.Input;
-import org.game.player.inventory.items.DirtItem;
+import org.game.player.server.inventory.items.DirtItem;
 import org.game.renderManager.UI.UI;
 import org.game.renderManager.UI.UI_Inventory;
 import org.joml.Vector2i;

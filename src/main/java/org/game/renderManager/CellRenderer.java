@@ -1,28 +1,34 @@
 package org.game.renderManager;
 
-import org.game.GameManager;
 import org.game.cell.Cell;
 import org.game.chunkManager.Chunk;
-import org.game.player.Camera;
+import org.game.player.client.Camera;
+import org.game.server.client.Client;
+import org.joml.Vector2i;
 
 import static org.Constants.*;
 public class CellRenderer {
 
-    private static Camera camera;
+    private Camera camera;
+    private Client client;
+    private Texture screen;
 
-    public static void set_camera(Camera cam){
-        camera = cam;
+    public CellRenderer(Client client){
+        this.client = client;
+        this.screen = client.get_render_manager().get_screen().get_texture();
+
+        camera = client.get_player().get_camera();
     }
 
-    public static void render_cells(){
-        Texture screen = GameManager.get_render_manager().get_screen().get_texture();
-
+    public void render_cells(){
         int camera_top = (int)camera.get_position().y - GRID_HEIGHT / 2;
         int camera_bottom = (int)camera.get_position().y + GRID_HEIGHT / 2;
         int camera_left = (int)camera.get_position().x - GRID_WIDTH / 2;
         int camera_right = (int)camera.get_position().x + GRID_WIDTH / 2;
 
-        for (Chunk chunk : camera.chunks_in_view){
+        for (Vector2i chunk_pos : camera.chunks_in_view){
+
+            Chunk chunk = client.get_chunk_manager().request_chunk(chunk_pos);
 
             if (chunk == null)
                 continue;

@@ -103,16 +103,6 @@ public class Texture {
     public void set_pixel(int x, int y, ColourA colour){
         int index = (y * width + x) * channels;
 
-        /*
-        float alpha_f = colour.a() / 255.0f;
-
-        Colour mixing_pixel = get_pixel(x, y);
-
-        int r_weighted = (int)Math.floor(colour.r() * alpha_f + mixing_pixel.r() * (1 - alpha_f));
-        int g_weighted = (int)Math.floor(colour.g() * alpha_f + mixing_pixel.g() * (1 - alpha_f));
-        int b_weighted = (int)Math.floor(colour.b() * alpha_f + mixing_pixel.b() * (1 - alpha_f));
-        */
-
         data.put(index, (byte) colour.r());
         data.put(index + 1, (byte) colour.g());
         data.put(index + 2, (byte) colour.b());

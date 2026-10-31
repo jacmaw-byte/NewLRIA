@@ -95,7 +95,7 @@ public class RenderManager {
             // Poll for window events
             Input.pre_polling();
             glfwPollEvents();
-            Input.execute_inputs();
+            Input.execute_inputs(window);
 
             Time.elapsed_time = glfwGetTime();
             Time.update_delta_time();
