@@ -3,8 +3,6 @@ package org.game.input;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.game.GameManager;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Input {
@@ -34,9 +32,7 @@ public class Input {
         scroll_x = 0;
     }
 
-    public static void execute_inputs(){
-        long window = GameManager.get_render_manager().get_window();
-
+    public static void execute_inputs(long window){
         for (var pair : input_hold_map){
             if (glfwGetKey(window, pair.code().key_code()) == GLFW_PRESS)
                 pair.callback().callback();
@@ -58,7 +54,6 @@ public class Input {
     }
 
     public static void scroll_callback(long window, double x_offset, double y_offset){
-
         scroll_x = x_offset;
         scroll_y = y_offset;
     }

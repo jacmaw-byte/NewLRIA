@@ -1,4 +1,4 @@
-package org.game.player;
+package org.game.player.client;
 
 import org.game.chunkManager.Chunk;
 
@@ -13,11 +13,12 @@ import static org.Constants.*;
 
 public class Camera {
     private Vector2f position;
-    public List<Chunk> chunks_in_view;
+    public List<Vector2i> chunks_in_view;
     private ChunkManager chunk_manager;
 
     public Camera(){
         chunks_in_view = new ArrayList<>();
+        position = new Vector2f(0.0f, 0.0f);
     }
 
     public void set_chunk_manager(ChunkManager chunk_manager){
@@ -46,13 +47,7 @@ public class Camera {
 
         for (int x = start_x; x < end_x; x++) {
             for (int y = start_y; y < end_y; y++) {
-                Vector2i chunk_pos = new Vector2i(x, y);
-
-                if (chunk_manager.chunks.containsKey(chunk_pos)){
-                    Chunk chunk = chunk_manager.get_chunk(chunk_pos);
-
-                    chunks_in_view.add(chunk);
-                }
+                chunks_in_view.add(new Vector2i(x, y));
             }
         }
     }

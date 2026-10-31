@@ -1,6 +1,5 @@
 package org.game.chunkManager;
 
-import org.game.GameManager;
 import org.game.cell.Cell;
 import org.game.cell.Cells;
 import org.game.terrain.NoiseManager;
@@ -21,6 +20,7 @@ public class Chunk {
     private Vector2i world_position;
 
     private final NoiseManager noise_manager;
+    private final ChunkManager manager;
 
     public Vector2i get_world_position(){
         return world_position;
@@ -64,6 +64,7 @@ public class Chunk {
                     is_stone = stone_noise_value > stone_spawn_chance;
                 }
 
+                // Determine the cell type based on position
                 if (world_y <= height && world_y >= grass_height){
                     set_cell(x, y, new Cell(Cells.GRASS));
                 }
@@ -83,13 +84,14 @@ public class Chunk {
         }
     }
 
-    public Chunk(Vector2i chunk_position){
+    public Chunk(Vector2i chunk_position, ChunkManager manager){
         this.chunk_position = chunk_position;
         world_position = new Vector2i();
 
         chunk_position.mul(CHUNK_SIZE, world_position);
 
-        noise_manager = GameManager.get_noise_manager();
+        noise_manager = manager.get_server().get_noise_manager();
+        this.manager = manager;
 
         generate_data();
     }

@@ -1,4 +1,4 @@
-package org.game.player.inventory;
+package org.game.player.server.inventory;
 
 import org.game.renderManager.image.Sprite;
 

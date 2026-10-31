@@ -1,7 +1,7 @@
 package org.game.chunkManager;
 
 import org.game.cell.Cell;
-import org.game.player.Player;
+import org.game.server.server.HostServer;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -14,29 +14,26 @@ public class ChunkManager {
 
     public HashMap<Vector2i, Chunk> chunks;
 
+    private HostServer server;
+
     public Chunk get_chunk(Vector2i position){
         return chunks.get(position);
     }
+    public HostServer get_server() { return server; }
 
-    private Player player;
-
-    public ChunkManager(){
+    public ChunkManager(HostServer server){
         chunks = new HashMap<>();
         render_distance_dimensions = new Vector2i(
                 (int)Math.ceil(GRID_WIDTH / (float)CHUNK_SIZE),
                 (int)Math.ceil(GRID_HEIGHT / (float)CHUNK_SIZE)
         );
-    }
 
-    public void set_player(Player player){
-        this.player = player;
+        this.server = server;
     }
 
     private static final int MAX_CHUNK_A_FRAME = 1;
 
-    public void generate_chunks(){
-        Vector2f camera_position = player.get_camera().get_position();
-
+    public void generate_chunks_around_player(Vector2f camera_position){
         int player_chunk_x = (int)Math.floor(camera_position.x / CHUNK_SIZE);
         int player_chunk_y = (int)Math.floor(camera_position.y / CHUNK_SIZE);
 
@@ -52,7 +49,7 @@ public class ChunkManager {
                 if (chunks.containsKey(chunk_pos)){
                     continue;
                 }
-                Chunk chunk = new Chunk(chunk_pos);
+                Chunk chunk = new Chunk(chunk_pos, this);
 
                 chunks.put(chunk_pos, chunk);
 
@@ -62,6 +59,20 @@ public class ChunkManager {
 
                 chunk_generated_this_frame++;
             }
+        }
+    }
+
+    public Chunk request_chunk(Vector2i position){
+
+        if (chunks.containsKey(position)){
+            return chunks.get(position);
+        }
+        else {
+            Chunk chunk = new Chunk(position, this);
+
+            chunks.put(position, chunk);
+
+            return chunk;
         }
     }
 
