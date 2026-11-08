@@ -1,4 +1,4 @@
-package org.game.renderManager;
+package org.game.scheisseRenderer;
 
 import org.joml.Matrix3f;
 
@@ -27,9 +27,10 @@ public class ShaderClass implements AutoCloseable {
     }
 
     @Override
-    public void close(){
+    public void close() {
         glDeleteShader(vertex_shader);
         glDeleteShader(frag_shader);
+        glDeleteProgram(ID);
     }
 
     public void set_int(String name, int value){
@@ -90,5 +91,9 @@ public class ShaderClass implements AutoCloseable {
             System.err.println("Shader linking failed:");
             System.err.println(glGetProgramInfoLog(ID));
         }
+    }
+
+    public void use() {
+        glUseProgram(ID);
     }
 }

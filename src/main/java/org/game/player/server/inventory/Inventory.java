@@ -2,8 +2,9 @@ package org.game.player.server.inventory;
 
 import org.game.input.Input;
 import org.game.player.server.inventory.items.DirtItem;
-import org.game.renderManager.UI.UI;
-import org.game.renderManager.UI.UI_Inventory;
+import org.game.scheisseRenderer.UI.UI;
+import org.game.scheisseRenderer.UI.UI_Inventory;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 public class Inventory {
@@ -23,12 +24,13 @@ public class Inventory {
         add_item_to_hotbar(0, new DirtItem());
 
         ui_inventory = new UI_Inventory(
+                "inventory",
                 this,
-                new Vector2i(100, 100),
+                new Vector2f(100, 100),
                 60
         );
 
-        UI.add_element(ui_inventory);
+        //UI.get_menu("main").add_element(ui_inventory);
     }
 
     public void update(){

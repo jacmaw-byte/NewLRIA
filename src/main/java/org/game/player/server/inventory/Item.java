@@ -1,6 +1,6 @@
 package org.game.player.server.inventory;
 
-import org.game.renderManager.image.Sprite;
+import org.game.scheisseRenderer.image.Sprite;
 
 public interface Item {
     Sprite get_sprite();

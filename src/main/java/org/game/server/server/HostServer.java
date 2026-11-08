@@ -29,12 +29,16 @@ public class HostServer implements Server, Runnable {
     private final Queue<PlayerDataRequest> pending_player_data_requests = new ConcurrentLinkedQueue<>();
 
     private final ChunkManager chunk_manager = new ChunkManager(this);
-    private final NoiseManager noise_manager = new NoiseManager();
+    private NoiseManager noise_manager;
 
     private static final double TICK_TIME = 1.0 / 20.0;
     private volatile boolean running;
 
     private Thread server_thread;
+
+    public HostServer(String seed) {
+        noise_manager = new NoiseManager(seed);
+    }
 
     public void start(){
         running = true;
@@ -123,7 +127,7 @@ public class HostServer implements Server, Runnable {
                 accumulator -= TICK_TIME;
             }
 
-            // Avoid consuming an entire CPU core.
+            // Avoid consuming an entire CPU core
             if (accumulator < TICK_TIME) {
                 Thread.yield();
             }

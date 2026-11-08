@@ -1,11 +1,8 @@
-package org.game.player.server;
+package org.game.player.client;
 
 import org.game.cell.Cell;
-import org.game.chunkManager.ChunkManager;
-import org.game.player.client.ClientPlayer;
-import org.game.renderManager.Texture;
-import org.game.renderManager.image.SpriteCPU;
-import org.game.server.client.Client;
+import org.game.scheisseRenderer.Texture;
+import org.game.scheisseRenderer.image.SpriteCPU;
 import org.game.server.client.ClientChunkManager;
 import org.types.ColourA;
 import org.joml.Vector2f;

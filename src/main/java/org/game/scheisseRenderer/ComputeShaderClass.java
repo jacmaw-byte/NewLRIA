@@ -1,4 +1,4 @@
-package org.game.renderManager;
+package org.game.scheisseRenderer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
