@@ -1,8 +1,9 @@
-package org.game.renderManager;
+package org.game.scheisseRenderer;
 
 import org.game.cell.Cell;
 import org.game.chunkManager.Chunk;
 import org.game.player.client.Camera;
+import org.game.scheisseRenderer.mainRenderer.MainRenderer;
 import org.game.server.client.Client;
 import org.joml.Vector2i;
 
@@ -15,7 +16,7 @@ public class CellRenderer {
 
     public CellRenderer(Client client){
         this.client = client;
-        this.screen = client.get_render_manager().get_screen().get_texture();
+        this.screen = MainRenderer.get_instance().get_screen().get_texture();
 
         camera = client.get_player().get_camera();
     }

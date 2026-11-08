@@ -1,4 +1,4 @@
-package org.game.renderManager;
+package org.game.scheisseRenderer;
 
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;

@@ -1,4 +1,4 @@
-package org.game.renderManager;
+package org.game.scheisseRenderer.mainRenderer;
 
 public interface GameLoop {
     void loop();

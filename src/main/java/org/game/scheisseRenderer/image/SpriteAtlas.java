@@ -1,6 +1,6 @@
-package org.game.renderManager.image;
+package org.game.scheisseRenderer.image;
 
-import org.game.renderManager.Texture;
+import org.game.scheisseRenderer.Texture;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.joml.Vector2f;

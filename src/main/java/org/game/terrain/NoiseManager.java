@@ -8,14 +8,16 @@ public class NoiseManager {
     private FastNoiseLite stone_noise;
     private FastNoiseLite ore_noise;
 
-    private int seed = 1337;
+    private int seed;
 
     public FastNoiseLite get_terrain_noise(){ return terrain_noise; }
     public FastNoiseLite get_stone_noise(){ return stone_noise; }
     public FastNoiseLite get_ore_noise(){ return ore_noise; }
     public int get_seed() { return seed; }
 
-    public NoiseManager(){
+    public NoiseManager(String seed){
+        this.seed = seed.hashCode();
+
         init_terrain_noise();
         init_stone_noise();
         init_ore_noise();

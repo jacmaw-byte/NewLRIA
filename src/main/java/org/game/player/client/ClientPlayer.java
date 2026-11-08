@@ -1,10 +1,8 @@
 package org.game.player.client;
 
-import org.game.chunkManager.ChunkManager;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
-import org.game.player.server.PlayerCollider;
-import org.game.renderManager.image.SpriteCPU;
+import org.game.scheisseRenderer.image.SpriteCPU;
 import org.game.server.client.ClientChunkManager;
 import org.joml.Vector2f;
 

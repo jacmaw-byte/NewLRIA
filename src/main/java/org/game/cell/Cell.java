@@ -1,6 +1,6 @@
 package org.game.cell;
 
-import org.game.renderManager.Texture;
+import org.game.scheisseRenderer.Texture;
 import org.types.Colour;
 
 public class Cell {

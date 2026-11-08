@@ -1,8 +1,10 @@
-package org.game.renderManager;
+package org.game.scheisseRenderer.mainRenderer;
 
 import org.Constants;
 import org.game.Time;
 import org.game.input.Input;
+import org.game.scheisseRenderer.LightingHandler;
+import org.game.scheisseRenderer.PracticalScreen;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.Callback;
@@ -12,16 +14,19 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public class RenderManager {
-    private final long window;
+public class MainRenderer {
+    private static MainRenderer instance;
+
+    private long window;
     public String window_name;
 
     private PracticalScreen practical_screen;
     private LightingHandler lighting_handler;
 
-    Callback debugProc;
+    //private Callback debugProc;
+    private GameLoop loop;
 
-    public RenderManager(String window_name){
+    public void start(String window_name){
         this.window_name = window_name;
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -44,11 +49,10 @@ public class RenderManager {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         // Create glfw window
-        window = glfwCreateWindow(Constants.SCR_WIDTH, Constants.SCR_HEIGHT, this.window_name, NULL, NULL);
+        window = glfwCreateWindow(Constants.SCR_WIDTH, Constants.SCR_HEIGHT, window_name, NULL, NULL);
 
-        // Set callbacks
-        glfwSetKeyCallback(window, Input::process_input);
-        glfwSetScrollCallback(window, Input::scroll_callback);
+        Input.set_callbacks(window);
+
         // Make the OpenGl context current
         glfwMakeContextCurrent(window);
         // Disable v-sync
@@ -56,22 +60,11 @@ public class RenderManager {
 
         //Make the window visible
         glfwShowWindow(window);
-    }
 
-    public long get_window(){
-        return window;
-    }
-    public PracticalScreen get_screen(){
-        return practical_screen;
-    }
-    public LightingHandler get_lighting_handler(){
-        return lighting_handler;
-    }
-
-    public void start_context(){
+        // Start context
         GL.createCapabilities();
 
-        debugProc = GLUtil.setupDebugMessageCallback();
+        //debugProc = GLUtil.setupDebugMessageCallback();
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -82,7 +75,7 @@ public class RenderManager {
         lighting_handler = new LightingHandler();
     }
 
-    public void start_render_loop(GameLoop loop){
+    public void start_render_loop(){
         Time.last_time = 0.0f;
 
         double frame_log_interval = 2.0f;
@@ -131,5 +124,26 @@ public class RenderManager {
         glfwTerminate();
         glfwSetErrorCallback(null).free();
 
+    }
+
+    public static MainRenderer get_instance(){
+        if (instance == null){
+            instance = new MainRenderer();
+        }
+
+        return instance;
+    }
+    public long get_window(){
+        return window;
+    }
+    public PracticalScreen get_screen(){
+        return practical_screen;
+    }
+    public LightingHandler get_lighting_handler(){
+        return lighting_handler;
+    }
+
+    public void set_render_loop(GameLoop loop) {
+        this.loop = loop;
     }
 }

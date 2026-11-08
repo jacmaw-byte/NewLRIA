@@ -1,8 +1,8 @@
-package org.game.renderManager.UI;
+package org.game.scheisseRenderer.UI;
 
 import org.game.player.server.inventory.Inventory;
 import org.game.player.server.inventory.Item;
-import org.game.renderManager.image.Sprite;
+import org.game.scheisseRenderer.image.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,17 +10,16 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
-public class UI_Inventory extends UI_Element{
+public class UI_Inventory extends UI_Element {
     private List<Sprite> slot_sprites;
     private Sprite selector;
-    private Vector2i position;
 
     private Inventory inventory;
 
     int slot_size;
-    public UI_Inventory(Inventory inventory, Vector2i position, int slot_size){
+    public UI_Inventory(String name, Inventory inventory, Vector2f position, int slot_size){
+        set_position(position);
         this.slot_size = slot_size;
-        this.position = position;
         this.inventory = inventory;
 
         slot_sprites = new ArrayList<>();
@@ -50,6 +49,9 @@ public class UI_Inventory extends UI_Element{
     @Override
     public void draw() {
         int i = 0;
+
+        Vector2f screen_position = get_screen_position();
+
         for (Sprite sprite : slot_sprites){
             sprite.draw();
 
@@ -57,7 +59,9 @@ public class UI_Inventory extends UI_Element{
             if (item != null){
                 Sprite item_sprite = item.get_sprite();
                 // Move the item to be in the slot
-                item_sprite.get_transform().set_position(new Vector2f(slot_size * i + position.x + 10, position.y + 10));
+                item_sprite.get_transform().set_position(
+                        new Vector2f(slot_size * i + screen_position.x + 10, screen_position.y + 10
+                ));
 
                 item_sprite.draw();
             }
@@ -66,7 +70,7 @@ public class UI_Inventory extends UI_Element{
         }
 
         // Move the selector to be to its slot
-        selector.get_transform().set_position(new Vector2f(slot_size * inventory.selected_slot + position.x, position.y));
+        selector.get_transform().set_position(new Vector2f(slot_size * inventory.selected_slot + screen_position.x, screen_position.y));
 
         selector.draw();
     }
