@@ -22,6 +22,10 @@ public class Input {
 
     private static boolean[] mouse_buttons_pressed;
 
+    public static long arrow_cursor;
+    public static long ibeam_cursor;
+    public static long link_cursor;
+
     public static void start(){
         input_hold_map = new ArrayList<>();
         input_press_map = new ArrayList<>();
@@ -116,6 +120,10 @@ public class Input {
         glfwSetScrollCallback(window, Input::scroll_callback);
         glfwSetMouseButtonCallback(window, Input::mouse_callback);
         glfwSetCharCallback(window, Input::char_callback);
+
+        arrow_cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+        ibeam_cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+        link_cursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
     }
 
     public static double get_scroll_x(){ return scroll_x; }
@@ -127,5 +135,9 @@ public class Input {
 
     public static boolean get_mouse_pressing(int button) {
         return glfwGetMouseButton(MainRenderer.get_instance().get_window(), button) == GLFW_PRESS;
+    }
+
+    public static void set_cursor(long cursor) {
+        glfwSetCursor(MainRenderer.get_instance().get_window(), cursor);
     }
 }

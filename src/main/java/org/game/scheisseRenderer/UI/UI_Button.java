@@ -19,29 +19,27 @@ public class UI_Button extends UI_Element {
         this.text = text;
         this.name = name;
 
-        image = new UI_Image("sprite", get_screen_position(), size, UI.ui_atlas, new Vector2i(2, 0));
+        image = new UI_Image("sprite", new Vector2f(), size, UI.ui_atlas, new Vector2i(2, 0));
 
         text_label = new UI_TextLabel("label", new Vector2f(), (int)size.y, text);
 
-        Vector2f text_dimensions = text_label.get_dimensions();
-
-        text_label.set_position(new Vector2f(
-                (size.x - text_dimensions.x) / 2.0f,
-                (text_dimensions.y - size.y) / 2.0f
-        ));
+        text_label.centralise(dimensions);
         
         add_child(image);
         add_child(text_label);
     }
 
     @Override
+    public boolean clickable() {
+        return true;
+    }
+
+    @Override
     public void update() {
-        boolean mouse_hovering = get_mouse_hover();
+        boolean mouse_hovering = is_hovering();
 
         if (mouse_hovering && Input.get_mouse_pressed(0)){
             callback.callback();
         }
     }
-
-
 }

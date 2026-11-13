@@ -9,6 +9,7 @@ import java.util.*;
 public abstract class UI_Element{
     // Position is private so it is only accessed by a function that will get the world position
     private Vector2f position;
+    private boolean enabled = true;
     protected String name;
     protected Vector2f dimensions;
 
@@ -23,7 +24,7 @@ public abstract class UI_Element{
 
     }
 
-    public void set_position(Vector2f position) { this.position = position; }
+    public boolean clickable() { return false; }
 
     public Vector2f get_screen_position() {
         // Don't try to access the parent of the root
@@ -37,20 +38,16 @@ public abstract class UI_Element{
         );
     }
 
-    protected boolean get_mouse_hover() {
-
-        if (UI.hovered_over_element) return false;
+    protected boolean is_mouse_inside() {
+        if (dimensions == null) return false;
 
         Vector2i mouse_position = Input.get_mouse_position();
+        Vector2f screen_position = get_screen_position();
 
-        // AABB collisions
-        if (mouse_position.x >= position.x && mouse_position.x <= position.x + dimensions.x &&
-                mouse_position.y >= position.y && mouse_position.y <= position.y + dimensions.y){
-            UI.hovered_over_element = true;
-            return true;
-        }
-
-        return false;
+        return mouse_position.x >= screen_position.x &&
+                mouse_position.x <= screen_position.x + dimensions.x &&
+                mouse_position.y >= screen_position.y &&
+                mouse_position.y <= screen_position.y + dimensions.y;
     }
 
     public <T extends UI_Element> T get_child(String name, Class<T> type) {
@@ -75,5 +72,12 @@ public abstract class UI_Element{
     }
 
     public void set_parent(UI_Element parent) { this.parent = parent; }
+    public void set_position(Vector2f position) { this.position = position; }
+    public void set_position(float x, float y) { position.x = x; position.y = y; }
+    public void set_active(boolean active) { enabled = active; }
+    public boolean get_active() { return enabled; }
+
+    public boolean is_hovering() { return this == UI.hovered_element; }
+
     public String get_name() { return name; }
 }

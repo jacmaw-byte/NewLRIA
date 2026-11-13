@@ -1,18 +1,20 @@
 package org.game.scheisseRenderer.UI;
 
 
+import org.game.input.Input;
 import org.game.scheisseRenderer.UI.menus.GameMenu;
 import org.game.scheisseRenderer.UI.menus.GameUI;
 import org.game.scheisseRenderer.image.SpriteAtlas;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class UI {
     private HashMap<String, UI_Menu> menus;
 
     protected static SpriteAtlas ui_atlas;
-    protected static boolean hovered_over_element = false;
+    protected static UI_Element hovered_element = null;
 
     public UI(){
         ui_atlas = new SpriteAtlas("assets/sprites/UI_Atlas.png", new Vector2i(32, 32), 2);
@@ -28,12 +30,35 @@ public class UI {
         }
     }
 
-    public void update_ui(){
-        GameMenu.switched = false;
-        hovered_over_element = false;
+    private UI_Element find_hovered_element() {
+        for (UI_Menu menu : menus.values()) {
+            if (!menu.is_active()) continue;
 
-        for (UI_Menu menu : menus.values()){
-            if (menu.is_active()) menu.update();
+            UI_Element element = menu.find_hovered_element();
+
+            if (element != null)
+                return element;
+        }
+
+        return null;
+    }
+
+    public void update_ui() {
+        GameMenu.switched = false;
+
+        hovered_element = find_hovered_element();
+
+        if (hovered_element instanceof UI_InputField<?>) {
+            Input.set_cursor(Input.ibeam_cursor);
+        }
+        else {
+            Input.set_cursor(Input.arrow_cursor);
+        }
+
+        for (UI_Menu menu : menus.values()) {
+            if (!menu.is_active()) continue;
+
+            menu.update();
         }
     }
 

@@ -361,45 +361,57 @@ public class TextRenderer implements AutoCloseable {
         FloatBuffer text_x = BufferUtils.createFloatBuffer(1);
         FloatBuffer text_y = BufferUtils.createFloatBuffer(1);
 
-        STBTTAlignedQuad char_quad = STBTTAlignedQuad.malloc();
+        float line_height = font_size * 1.2f; // baseline-to-baseline distance (match your renderer)
 
         float max_width = 0;
-        float current_width = 0;
-        int lines = 1;
+        float min_y = Float.MAX_VALUE;   // top of highest glyph
+        float max_y = -Float.MAX_VALUE;  // bottom of lowest glyph
+        boolean has_ink = false;
 
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
+        text_x.put(0, 0f);
+        text_y.put(0, 0f);
 
-            if (c == '\n') {
-                max_width = Math.max(max_width, current_width);
-                current_width = 0;
-                lines++;
-                continue;
+        STBTTAlignedQuad char_quad = STBTTAlignedQuad.malloc();
+        try {
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+
+                if (c == '\n') {
+                    max_width = Math.max(max_width, text_x.get(0));
+                    text_x.put(0, 0f);
+                    text_y.put(0, text_y.get(0) + line_height);
+                    continue;
+                }
+
+                if (c < FIRST_CHAR || c >= FIRST_CHAR + CHAR_COUNT) {
+                    c = '?';
+                }
+
+                stbtt_GetBakedQuad(
+                        char_data,
+                        atlas_size,
+                        atlas_size,
+                        c - FIRST_CHAR,
+                        text_x,
+                        text_y,
+                        char_quad,
+                        true
+                );
+
+                // Skip glyphs with no visible area (e.g. spaces) so they don't skew bounds
+                if (char_quad.y1() > char_quad.y0()) {
+                    min_y = Math.min(min_y, char_quad.y0());
+                    max_y = Math.max(max_y, char_quad.y1());
+                    has_ink = true;
+                }
             }
 
-            if (c < FIRST_CHAR || c >= FIRST_CHAR + CHAR_COUNT) {
-                c = '?';
-            }
-
-            stbtt_GetBakedQuad(
-                    char_data,
-                    atlas_size,
-                    atlas_size,
-                    c - FIRST_CHAR,
-                    text_x,
-                    text_y,
-                    char_quad,
-                    true
-            );
-
-            current_width = text_x.get(0);
+            max_width = Math.max(max_width, text_x.get(0));
+        } finally {
+            char_quad.free();
         }
 
-        max_width = Math.max(max_width, current_width);
-
-        char_quad.free();
-
-        float height = lines * font_size * 1.2f;
+        float height = has_ink ? (max_y - min_y) : 0f;
 
         return new Vector2f(max_width, height);
     }

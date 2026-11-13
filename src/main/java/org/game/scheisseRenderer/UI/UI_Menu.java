@@ -17,19 +17,23 @@ public class UI_Menu {
     }
 
     private static void draw_element(UI_Element element) {
-        element.draw();
+        if (element.get_active()){
+            element.draw();
 
-        // Process children after so they are drawn over
-        for (UI_Element child : element.get_children())
-            draw_element(child);
+            // Process children after so they are drawn over
+            for (UI_Element child : element.get_children())
+                draw_element(child);
+        }
     }
 
     private static void update_element(UI_Element element) {
-        // Process Before so that children will get the opportunity to be pressed on before the parent
-        for (UI_Element child : element.get_children())
-            update_element(child);
+        if (element.get_active()){
+            // Process Before so that children will get the opportunity to be pressed on before the parent
+            for (UI_Element child : element.get_children())
+                update_element(child);
 
-        element.update();
+            element.update();
+        }
     }
 
     public void draw(){
@@ -40,8 +44,29 @@ public class UI_Menu {
 
     public void update(){
         update_element(root_node);
+    }
 
-        UI.hovered_over_element = false;
+    public UI_Element find_hovered_element() {
+        return find_hovered_element_recursive(root_node);
+    }
+
+    private UI_Element find_hovered_element_recursive(UI_Element element) {
+        if (!element.get_active()) return null;
+
+        // Check children first so they get priority over parents
+        List<UI_Element> children = element.get_children();
+
+        for (int i = children.size() - 1; i >= 0; i--) {
+            UI_Element result = find_hovered_element_recursive(children.get(i));
+
+            if (result != null && result.clickable())
+                return result;
+        }
+
+        if (element.is_mouse_inside())
+            return element;
+
+        return null;
     }
 
     public <T extends UI_Element> T get_element(String name, Class<T> type) {
