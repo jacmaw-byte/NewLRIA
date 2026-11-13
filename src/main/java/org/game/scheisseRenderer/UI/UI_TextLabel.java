@@ -8,6 +8,7 @@ public class UI_TextLabel extends UI_Element{
 
     private String text;
     private TextRenderer text_renderer;
+    private int padding;
     private int font_size;
 
     public UI_TextLabel(String name, Vector2f position, int font_size, String text) {
@@ -17,6 +18,14 @@ public class UI_TextLabel extends UI_Element{
         this.name = name;
 
         text_renderer = new TextRenderer(UI_Config.FONT_PATH, font_size);
+    }
+
+    public void centralise(Vector2f outer_size) {
+        Vector2f dimensions = get_dimensions();
+        set_position(
+                (outer_size.x - dimensions.x) / 2.0f,
+                (outer_size.y - dimensions.y) / 2.0f
+        );
     }
 
     @Override

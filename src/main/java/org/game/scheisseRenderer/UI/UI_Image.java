@@ -24,6 +24,7 @@ public class UI_Image extends UI_Element {
 
     @Override
     public void draw() {
+        sprite.get_transform().set_position(get_screen_position());
         sprite.draw();
     }
 }

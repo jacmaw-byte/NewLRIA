@@ -30,6 +30,7 @@ public class Main {
         });
 
         MainRenderer.get_instance().start_render_loop();
-        server.stop();
+        if (server != null)
+            server.stop();
     }
 }
