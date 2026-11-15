@@ -51,7 +51,7 @@
 // perform a file-wide replace on the following strings (including /*FNLfloat*/)
 // /*FNLfloat*/ float
 // /*FNLfloat*/ double
-package org.game.worldGen;
+package org.game.terrain;
 
 public class FastNoiseLite
 {

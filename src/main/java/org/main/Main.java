@@ -16,17 +16,18 @@ import java.awt.*;
 public class Main {
 
     public static HostServer server;
+    public static GameUI ui;
 
     public static void main(String[] args){
         Input.start();
 
         MainRenderer.get_instance().start("LRIA");
 
-        GameUI game_ui = new GameUI();
+        ui = new GameUI();
 
         MainRenderer.get_instance().set_render_loop(() -> {
-            game_ui.get_ui().update_ui();
-            game_ui.get_ui().draw_ui();
+            ui.update();
+            ui.get_ui().draw_ui();
         });
 
         MainRenderer.get_instance().start_render_loop();

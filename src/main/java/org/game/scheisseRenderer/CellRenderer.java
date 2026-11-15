@@ -1,7 +1,8 @@
 package org.game.scheisseRenderer;
 
 import org.game.cell.Cell;
-import org.game.chunkManager.Chunk;
+import org.game.chunkManager.client.ClientChunk;
+import org.game.chunkManager.server.ServerChunk;
 import org.game.player.client.Camera;
 import org.game.scheisseRenderer.mainRenderer.MainRenderer;
 import org.game.server.client.Client;
@@ -29,7 +30,7 @@ public class CellRenderer {
 
         for (Vector2i chunk_pos : camera.chunks_in_view){
 
-            Chunk chunk = client.get_chunk_manager().request_chunk(chunk_pos);
+            ClientChunk chunk = client.get_chunk_manager().request_chunk(chunk_pos);
 
             if (chunk == null)
                 continue;

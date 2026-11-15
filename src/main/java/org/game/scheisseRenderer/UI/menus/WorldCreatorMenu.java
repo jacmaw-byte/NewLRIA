@@ -81,6 +81,8 @@ public class WorldCreatorMenu extends GameMenu{
 
             Main.server.create_host_client(game_client);
 
+            switch_menu(game_ui.hud);
+
             game_client.start();
         }
     }

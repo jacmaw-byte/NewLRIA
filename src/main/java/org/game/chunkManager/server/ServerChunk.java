@@ -1,26 +1,27 @@
-package org.game.chunkManager;
+package org.game.chunkManager.server;
 
 import org.game.cell.Cell;
+import org.game.cell.CellID;
 import org.game.cell.Cells;
 import org.game.terrain.NoiseManager;
 
 import static org.Constants.*;
 import org.joml.Vector2i;
 
-public class Chunk {
+public class ServerChunk {
     private final static int GRASS_HEIGHT_VARIANCE = 1;
     private final static int GRASS_DEPTH = 4;
     private final static float STONE_CHANCE_FACTOR = 0.1f;
 
     private final static float IRON_ORE_THRESHOLD = 0.99f;
 
-    private final Cell[] cells = new Cell[CHUNK_SIZE * CHUNK_SIZE];
+    private final CellID[] cells = new CellID[CHUNK_SIZE * CHUNK_SIZE];
 
     private final Vector2i chunk_position;
     private Vector2i world_position;
 
     private final NoiseManager noise_manager;
-    private final ChunkManager manager;
+    private final ServerChunkManager manager;
 
     public Vector2i get_world_position(){
         return world_position;
@@ -30,7 +31,7 @@ public class Chunk {
         return chunk_position;
     }
 
-    public Cell get_cell(int x, int y){
+    public CellID get_cell(int x, int y){
         int index = x * CHUNK_SIZE + y;
 
         if (index < 0 || index > CHUNK_SIZE * CHUNK_SIZE)
@@ -39,7 +40,7 @@ public class Chunk {
         return cells[index];
     }
 
-    public void set_cell(int x, int y, Cell cell){
+    public void set_cell(int x, int y, CellID cell){
         cells[x * CHUNK_SIZE + y] = cell;
     }
 
@@ -66,25 +67,29 @@ public class Chunk {
 
                 // Determine the cell type based on position
                 if (world_y <= height && world_y >= grass_height){
-                    set_cell(x, y, new Cell(Cells.GRASS));
+                    set_cell(x, y, Cells.GRASS.id());
                 }
                 else if (world_y < height && is_iron){
-                    set_cell(x, y, new Cell(Cells.IRON));
+                    set_cell(x, y, Cells.IRON.id());
                 }
                 else if (world_y < height && is_stone){
-                    set_cell(x, y, new Cell(Cells.STONE));
+                    set_cell(x, y, Cells.STONE.id());
                 }
                 else if (world_y < height){
-                    set_cell(x, y, new Cell(Cells.DIRT));
+                    set_cell(x, y, Cells.DIRT.id());
                 }
                 else{
-                    set_cell(x, y, new Cell(Cells.AIR));
+                    set_cell(x, y, Cells.AIR.id());
                 }
             }
         }
     }
 
-    public Chunk(Vector2i chunk_position, ChunkManager manager){
+    public ChunkData encode() {
+        return new ChunkData(cells.clone(), chunk_position);
+    }
+
+    public ServerChunk(Vector2i chunk_position, ServerChunkManager manager){
         this.chunk_position = chunk_position;
         world_position = new Vector2i();
 

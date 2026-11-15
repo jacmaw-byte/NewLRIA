@@ -1,10 +1,9 @@
 package org.game.server.server.clientInterface;
 
-import org.game.chunkManager.Chunk;
-import org.game.player.common.PlayerData;
+import org.game.chunkManager.server.ChunkData;
+import org.game.chunkManager.server.ServerChunk;
 import org.game.player.common.PlayerInput;
 import org.game.player.server.ServerPlayer;
-import org.game.server.server.Server;
 
 public interface ServerClient {
     PlayerInput get_last_received_input();
@@ -14,5 +13,5 @@ public interface ServerClient {
 
     void connect(int id);
 
-    void receive_chunk(Chunk chunk);
+    void receive_chunk(ChunkData chunk);
 }

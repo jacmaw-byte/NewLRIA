@@ -1,8 +1,8 @@
 package org.game.player.client;
 
-import org.game.chunkManager.Chunk;
-
-import org.game.chunkManager.ChunkManager;
+import org.game.chunkManager.client.ClientChunkManager;
+import org.game.chunkManager.server.ServerChunkManager;
+import org.game.server.client.Client;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -14,14 +14,14 @@ import static org.Constants.*;
 public class Camera {
     private Vector2f position;
     public List<Vector2i> chunks_in_view;
-    private ChunkManager chunk_manager;
+    private ClientChunkManager chunk_manager;
 
     public Camera(){
         chunks_in_view = new ArrayList<>();
         position = new Vector2f(0.0f, 0.0f);
     }
 
-    public void set_chunk_manager(ChunkManager chunk_manager){
+    public void set_chunk_manager(ClientChunkManager chunk_manager){
         this.chunk_manager = chunk_manager;
     }
 

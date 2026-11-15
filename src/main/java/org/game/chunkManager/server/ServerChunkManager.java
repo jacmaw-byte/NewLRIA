@@ -1,6 +1,7 @@
-package org.game.chunkManager;
+package org.game.chunkManager.server;
 
 import org.game.cell.Cell;
+import org.game.cell.CellID;
 import org.game.server.server.HostServer;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -9,19 +10,19 @@ import java.util.HashMap;
 
 import static org.Constants.*;
 
-public class ChunkManager {
+public class ServerChunkManager {
     public static Vector2i render_distance_dimensions;
 
-    public HashMap<Vector2i, Chunk> chunks;
+    public HashMap<Vector2i, ServerChunk> chunks;
 
     private HostServer server;
 
-    public Chunk get_chunk(Vector2i position){
+    public ServerChunk get_chunk(Vector2i position){
         return chunks.get(position);
     }
     public HostServer get_server() { return server; }
 
-    public ChunkManager(HostServer server){
+    public ServerChunkManager(HostServer server){
         chunks = new HashMap<>();
         render_distance_dimensions = new Vector2i(
                 (int)Math.ceil(GRID_WIDTH / (float)CHUNK_SIZE),
@@ -49,7 +50,7 @@ public class ChunkManager {
                 if (chunks.containsKey(chunk_pos)){
                     continue;
                 }
-                Chunk chunk = new Chunk(chunk_pos, this);
+                ServerChunk chunk = new ServerChunk(chunk_pos, this);
 
                 chunks.put(chunk_pos, chunk);
 
@@ -62,13 +63,13 @@ public class ChunkManager {
         }
     }
 
-    public Chunk request_chunk(Vector2i position){
+    public ServerChunk request_chunk(Vector2i position){
 
         if (chunks.containsKey(position)){
             return chunks.get(position);
         }
         else {
-            Chunk chunk = new Chunk(position, this);
+            ServerChunk chunk = new ServerChunk(position, this);
 
             chunks.put(position, chunk);
 
@@ -76,11 +77,11 @@ public class ChunkManager {
         }
     }
 
-    public Cell get_cell(int x, int y){
+    public CellID get_cell(int x, int y){
         int chunk_x = (int)Math.floor((float)x / CHUNK_SIZE);
         int chunk_y = (int)Math.floor((float)y / CHUNK_SIZE);
 
-        Chunk chunk = chunks.get(new Vector2i(chunk_x, chunk_y));
+        ServerChunk chunk = chunks.get(new Vector2i(chunk_x, chunk_y));
 
         if (chunk == null)
             return null;
