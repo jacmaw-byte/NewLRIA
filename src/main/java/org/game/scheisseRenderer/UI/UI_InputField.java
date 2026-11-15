@@ -110,6 +110,7 @@ public class UI_InputField<T extends OutputTypes> extends UI_Element {
 
             Vector2f text_dimensions = text.get_dimensions();
 
+            // Adjust back to what it was before typing the character
             if (text_dimensions.x - padding > dimensions.x)
                 text.backspace();
 

@@ -1,7 +1,5 @@
 package org.game.terrain;
 
-import org.game.worldGen.FastNoiseLite;
-
 public class NoiseManager {
 
     private FastNoiseLite terrain_noise;
@@ -18,6 +16,8 @@ public class NoiseManager {
     public NoiseManager(String seed){
         this.seed = seed.hashCode();
 
+        OtherNoise.set_seed(this.seed);
+        
         init_terrain_noise();
         init_stone_noise();
         init_ore_noise();

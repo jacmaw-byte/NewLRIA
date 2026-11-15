@@ -3,7 +3,7 @@ package org.game.player.client;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.scheisseRenderer.image.SpriteCPU;
-import org.game.server.client.ClientChunkManager;
+import org.game.chunkManager.client.ClientChunkManager;
 import org.joml.Vector2f;
 
 public class ClientPlayer {

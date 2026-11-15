@@ -1,12 +1,11 @@
 package org.game.server.server.clientInterface;
 
-import org.game.chunkManager.Chunk;
-import org.game.player.common.PlayerData;
+import org.game.chunkManager.server.ChunkData;
+import org.game.chunkManager.server.ServerChunk;
 import org.game.player.common.PlayerInput;
 import org.game.player.server.ServerPlayer;
 import org.game.server.client.Client;
 import org.game.server.server.HostServer;
-import org.game.server.server.Server;
 
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ public class HostClient implements ServerClient {
     }
 
     @Override
-    public void receive_chunk(Chunk chunk) { client.receive_chunk(chunk); }
+    public void receive_chunk(ChunkData chunk) { client.receive_chunk(chunk); }
 
     @Override
     public PlayerInput get_last_received_input() { return last_received_input; }

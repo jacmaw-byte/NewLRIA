@@ -1,7 +1,8 @@
 package org.game.server.client;
 
 import org.game.Time;
-import org.game.chunkManager.Chunk;
+import org.game.chunkManager.server.ChunkData;
+import org.game.chunkManager.client.ClientChunkManager;
 import org.game.player.client.ClientPlayer;
 import org.game.player.client.PlayerController;
 import org.game.player.client.PlayerRenderer;
@@ -27,7 +28,7 @@ public class Client {
 
     // We need these to make sure that the data is processed on a different thread from the server
     private PlayerData pending_player_data = null;
-    private final Queue<Chunk> pending_chunks = new ConcurrentLinkedQueue<>();
+    private final Queue<ChunkData> pending_chunks = new ConcurrentLinkedQueue<>();
 
     public Client(Server server){
         this.server = server;
@@ -42,7 +43,7 @@ public class Client {
     }
 
     private void poll_chunks(){
-        Chunk chunk;
+        ChunkData chunk;
 
         while ((chunk = pending_chunks.poll()) != null) {
             chunk_manager.receive_chunk(chunk);
@@ -70,6 +71,7 @@ public class Client {
             MainRenderer.get_instance().get_screen().draw(MainRenderer.get_instance().get_lighting_handler());
 
             player.get_camera().clear_chunks_in_view();
+            chunk_manager.reset_chunk_throttle();
         }
     }
 
@@ -82,7 +84,7 @@ public class Client {
         this.id = id;
     }
 
-    public void receive_chunk(Chunk chunk){ pending_chunks.add(chunk); }
+    public void receive_chunk(ChunkData chunk){ pending_chunks.add(chunk); }
     public void receive_player_data(PlayerData data) { pending_player_data = data; }
 
     public int get_id(){ return id; }

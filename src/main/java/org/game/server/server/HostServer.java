@@ -1,10 +1,10 @@
 package org.game.server.server;
 
-import org.game.chunkManager.Chunk;
-import org.game.chunkManager.ChunkManager;
+import org.game.chunkManager.server.ChunkData;
+import org.game.chunkManager.server.ServerChunk;
+import org.game.chunkManager.server.ServerChunkManager;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
-import org.game.player.server.ServerPlayer;
 import org.game.server.client.Client;
 import org.game.server.requests.ChunkRequest;
 import org.game.server.requests.InputRequest;
@@ -28,7 +28,7 @@ public class HostServer implements Server, Runnable {
     private final Queue<InputRequest> pending_input_requests = new ConcurrentLinkedQueue<>();
     private final Queue<PlayerDataRequest> pending_player_data_requests = new ConcurrentLinkedQueue<>();
 
-    private final ChunkManager chunk_manager = new ChunkManager(this);
+    private final ServerChunkManager chunk_manager = new ServerChunkManager(this);
     private NoiseManager noise_manager;
 
     private static final double TICK_TIME = 1.0 / 20.0;
@@ -61,7 +61,7 @@ public class HostServer implements Server, Runnable {
         ChunkRequest request;
 
         while ((request = pending_chunk_requests.poll()) != null){
-            Chunk chunk = chunk_manager.request_chunk(request.position());
+            ChunkData chunk = chunk_manager.request_chunk(request.position()).encode();
 
             clients.get(request.client_id()).receive_chunk(chunk);
         }
@@ -169,5 +169,5 @@ public class HostServer implements Server, Runnable {
     }
 
     public NoiseManager get_noise_manager(){ return noise_manager; }
-    public ChunkManager get_chunk_manager(){ return chunk_manager; }
+    public ServerChunkManager get_chunk_manager(){ return chunk_manager; }
 }
