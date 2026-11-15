@@ -78,11 +78,6 @@ public class MainRenderer {
     public void start_render_loop(){
         Time.last_time = 0.0f;
 
-        double frame_log_interval = 2.0f;
-        double frame_log_timer = 0;
-        double total = 0.0;
-        int i = 0;
-
         while (!glfwWindowShouldClose(window)){
 
             // Poll for window events
@@ -101,17 +96,6 @@ public class MainRenderer {
             glfwSwapBuffers(window);
 
             lighting_handler.occlusion_map.clear();
-            // Average out the fps over a few seconds
-            if (frame_log_timer > frame_log_interval){
-                System.out.println(total / i);
-                i = 0;
-                total = 0.0;
-                frame_log_timer = 0;
-            }
-
-            total += 1 / Time.delta_time;
-            i++;
-            frame_log_timer += Time.delta_time;
         }
 
         // Free the window callbacks and destroy the window
