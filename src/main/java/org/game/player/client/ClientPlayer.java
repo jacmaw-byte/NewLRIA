@@ -1,5 +1,6 @@
 package org.game.player.client;
 
+import org.game.player.common.PlayerCollider;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.scheisseRenderer.image.SpriteCPU;
@@ -20,6 +21,9 @@ public class ClientPlayer {
     private final PlayerCollider collider;
     private boolean flipped;
 
+    private static final float MAX_FALL_SPEED = -2f;   // px per frame (see note), tune to taste
+
+
     private boolean in_god_mode = false;
 
     public ClientPlayer(ClientChunkManager chunk_manager) {
@@ -33,7 +37,15 @@ public class ClientPlayer {
                 "assets/sprites/Player.png"
         ).slice();
 
-        collider = new PlayerCollider(this, chunk_manager);
+        collider = new PlayerCollider(new ClientTerrainView(chunk_manager));
+    }
+
+    private boolean terrain_ready(float dx, float dy) {
+        int px = (int) Math.floor(position.x);
+        int py = (int) Math.floor(position.y);
+        return collider.is_area_loaded(px, py)                                   // where I am
+                && collider.is_area_loaded(px + (int) Math.signum(dx) * 2, py)       // where I'm walking
+                && collider.is_area_loaded(px, py + (int) Math.floor(dy) - 2);       // where I'm falling/rising
     }
 
     public void tick(PlayerInput input, double dt) {
@@ -48,14 +60,14 @@ public class ClientPlayer {
         if (input.right()) {
             move_dx += (float)(speed * dt);
             flipped = false;
-            collider.set_flipped(false);
+            collider.set_flipped(false, position);
             sprite.set_flipped_x(false);
         }
 
         if (input.left()) {
             move_dx -= (float)(speed * dt);
             flipped = true;
-            collider.set_flipped(true);
+            collider.set_flipped(true, position);
             sprite.set_flipped_x(true);
         }
 
@@ -76,16 +88,18 @@ public class ClientPlayer {
 
         } else {
 
-            velocity.y -= (float)dt * 0.6f;
+            velocity.y -= (float) dt * 0.6f;
+            velocity.y = Math.max(velocity.y, MAX_FALL_SPEED);   // terminal velocity: can't skip a whole chunk in one frame
 
-            collider.move(position, move_dx, velocity.y);
+            if (!terrain_ready(move_dx, velocity.y)) {
+                // Chunks haven't arrived yet: hold position instead of falling through the void.
+                velocity.zero();
+            } else {
+                collider.move(position, move_dx, velocity.y);
 
-            if (collider.hit_y()) {
-                velocity.y = 0;
-            }
+                if (collider.hit_y()) velocity.y = 0;
 
-            if (input.jump() && collider.is_grounded()) {
-                velocity.y = 0.1f;
+                if (input.jump() && collider.is_grounded()) velocity.y = 0.1f;
             }
         }
 
@@ -107,8 +121,8 @@ public class ClientPlayer {
     }
 
     public void update(PlayerData new_data) {
-        // Used to apply server updates when necessary.
-        // For now, this is intentionally separate from tick().
+        position.set(new_data.x(), new_data.y());
+        velocity.zero();
     }
 
     public void destroy() {

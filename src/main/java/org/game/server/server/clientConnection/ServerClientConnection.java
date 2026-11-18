@@ -1,11 +1,11 @@
-package org.game.server.server.clientInterface;
+package org.game.server.server.clientConnection;
 
 import org.game.chunkManager.server.ChunkData;
-import org.game.chunkManager.server.ServerChunk;
+import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.player.server.ServerPlayer;
 
-public interface ServerClient {
+public interface ServerClientConnection {
     PlayerInput get_last_received_input();
     void set_last_received_input(PlayerInput input);
 
@@ -14,4 +14,8 @@ public interface ServerClient {
     void connect(int id);
 
     void receive_chunk(ChunkData chunk);
+
+    void receive_corrected_player_data(PlayerData data);
+
+    void update_tick();
 }

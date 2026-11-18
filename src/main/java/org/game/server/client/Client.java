@@ -16,6 +16,7 @@ import org.main.Main;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Client {
     private int id;
@@ -30,7 +31,7 @@ public class Client {
     private ClientChunkManager chunk_manager;
 
     // We need these to make sure that the data is processed on a different thread from the server
-    private PlayerData pending_player_data = null;
+    private final AtomicReference<PlayerData> pending_player_data = new AtomicReference<>();
     private final Queue<ChunkData> pending_chunks = new ConcurrentLinkedQueue<>();
 
     public Client(Server server){
@@ -46,9 +47,9 @@ public class Client {
     }
 
     private void poll_chunks(){
-        ChunkData chunk;
-
-        while ((chunk = pending_chunks.poll()) != null) {
+        while (chunk_manager.can_accept_chunk()) {
+            ChunkData chunk = pending_chunks.poll();
+            if (chunk == null) break;
             chunk_manager.receive_chunk(chunk);
         }
     }
@@ -57,8 +58,10 @@ public class Client {
         if (connected){
             poll_chunks();
 
-            if (pending_player_data != null)
-                player.update(pending_player_data);
+            PlayerData correction = pending_player_data.getAndSet(null);
+
+            if (correction != null)
+                player.update(correction);
 
             server.receive_inputs(id, player_controller.get_input());
 
@@ -69,6 +72,7 @@ public class Client {
             server.receive_player_data(id, player.get_data());
 
             player.get_camera().set_chunks_in_view();
+            chunk_manager.get_buffer_chunks();
 
             cell_renderer.render_cells();
             player_renderer.draw();
@@ -92,8 +96,18 @@ public class Client {
         this.id = id;
     }
 
-    public void receive_chunk(ChunkData chunk){ pending_chunks.add(chunk); }
-    public void receive_player_data(PlayerData data) { pending_player_data = data; }
+    public void server_tick() {
+        server.receive_player_data(id, player.get_data());
+    }
+
+    public void receive_chunk(ChunkData chunk){
+        System.out.println("Adding chunk to pending queue x: " + chunk.position().x + " y: "  + chunk.position().y);
+        pending_chunks.add(chunk);
+    }
+
+    public void receive_player_data(PlayerData data) {
+        pending_player_data.set(data);
+    }
 
     public int get_id(){ return id; }
     public ClientPlayer get_player() { return player; }

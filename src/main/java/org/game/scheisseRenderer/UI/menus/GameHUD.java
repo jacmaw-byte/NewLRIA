@@ -22,8 +22,6 @@ public class GameHUD extends GameMenu{
                 "fps: "
         );
 
-
-
         menu.add_element(fps_counter);
         game_ui.get_ui().add_menu(menu);
     }

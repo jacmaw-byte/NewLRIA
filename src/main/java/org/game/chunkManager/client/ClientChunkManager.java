@@ -2,10 +2,15 @@ package org.game.chunkManager.client;
 
 import org.game.cell.Cell;
 import org.game.chunkManager.server.ChunkData;
+import org.game.player.client.ClientPlayer;
 import org.game.server.client.Client;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.Constants.CHUNK_SIZE;
 
@@ -13,7 +18,9 @@ public class ClientChunkManager {
     private Client client;
 
     private int chunks_processed_this_frame = 0;
-    private static final int CHUNK_THROTTLE = 1;
+    private static final int CHUNK_THROTTLE = 4;
+
+    private final Set<Vector2i> requested = new HashSet<>();
 
     private HashMap<Vector2i, ClientChunk> chunk_map = new HashMap<>();
 
@@ -22,20 +29,38 @@ public class ClientChunkManager {
     }
 
     public ClientChunk request_chunk(Vector2i position){
-        if (chunk_map.containsKey(position)){
-            return chunk_map.get(position);
+        ClientChunk existing = chunk_map.get(position);
+        if (existing != null) return existing;
+
+        Vector2i key = new Vector2i(position);
+        if (requested.add(key)) {
+            client.get_server().request_chunk(client.get_id(), key);
         }
-        else{
-            client.get_server().request_chunk(client.get_id(), position);
-            return null;
+        return null;
+    }
+
+    public boolean can_accept_chunk() {
+        return chunks_processed_this_frame < CHUNK_THROTTLE;
+    }
+
+    public void get_buffer_chunks() {
+        Vector2i camera_pos = client.get_player().get_camera().get_chunk_position();
+        for (int x = -4; x < 4; x++) {
+            for (int y = -3; y < 3; y++) {
+                request_chunk(new Vector2i(x + camera_pos.x, y + camera_pos.y));
+            }
         }
     }
 
     public void receive_chunk(ChunkData data){
-        if (chunks_processed_this_frame < CHUNK_THROTTLE){
-            chunk_map.put(data.position(), new ClientChunk(this, data));
-            chunks_processed_this_frame++;
-        }
+        Vector2i key = new Vector2i(data.position());
+        requested.remove(key);
+
+        // ignore duplicate replies
+        if (chunk_map.containsKey(key)) return;
+
+        chunk_map.put(key, new ClientChunk(this, data));
+        chunks_processed_this_frame++;
     }
 
     public Cell get_cell(int x, int y){

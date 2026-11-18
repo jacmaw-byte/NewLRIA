@@ -1,28 +1,33 @@
 package org.game.server.server;
 
 import org.game.chunkManager.server.ChunkData;
-import org.game.chunkManager.server.ServerChunk;
 import org.game.chunkManager.server.ServerChunkManager;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
+import org.game.player.common.PlayerValidator;
+import org.game.player.server.ServerPlayer;
+import org.game.player.server.ServerTerrainView;
 import org.game.server.client.Client;
 import org.game.server.requests.ChunkRequest;
 import org.game.server.requests.InputRequest;
 import org.game.server.requests.PlayerDataRequest;
-import org.game.server.server.clientInterface.HostClient;
-import org.game.server.server.clientInterface.ServerClient;
+import org.game.server.server.clientConnection.HostClientConnection;
+import org.game.server.server.clientConnection.RemoteClientConnection;
+import org.game.server.server.clientConnection.RemoteConnectionsHandler;
+import org.game.server.server.clientConnection.ServerClientConnection;
 import org.game.terrain.NoiseManager;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HostServer implements Server, Runnable {
-    private final List<ServerClient> clients = new ArrayList<>();
-    private final Queue<ServerClient> pending_clients = new ConcurrentLinkedQueue<>();
+    private final List<ServerClientConnection> clients = new ArrayList<>();
+    private final Queue<ServerClientConnection> pending_clients = new ConcurrentLinkedQueue<>();
 
     private final Queue<ChunkRequest> pending_chunk_requests = new ConcurrentLinkedQueue<>();
     private final Queue<InputRequest> pending_input_requests = new ConcurrentLinkedQueue<>();
@@ -31,6 +36,8 @@ public class HostServer implements Server, Runnable {
     private final ServerChunkManager chunk_manager = new ServerChunkManager(this);
     private NoiseManager noise_manager;
 
+    private RemoteConnectionsHandler remote_connections_handler;
+
     private static final double TICK_TIME = 1.0 / 20.0;
     private volatile boolean running;
 
@@ -38,23 +45,21 @@ public class HostServer implements Server, Runnable {
 
     public HostServer(String seed) {
         noise_manager = new NoiseManager(seed);
+        try {
+            remote_connections_handler = new RemoteConnectionsHandler(25565, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void start(){
         running = true;
 
+        remote_connections_handler.start();
+
         server_thread = new Thread(this, "HostServer");
         server_thread.start();
-    }
-
-    private void poll_pending_clients(){
-        ServerClient client = pending_clients.poll();
-
-        if (client != null){
-            client.connect(clients.size());
-
-            clients.add(client);
-        }
     }
 
     private void poll_requested_chunks(){
@@ -67,29 +72,44 @@ public class HostServer implements Server, Runnable {
         }
     }
 
+    private void poll_pending_clients(){
+        ServerClientConnection client = pending_clients.poll();
+        if (client != null){
+            client.connect(clients.size());
+            client.get_player().set_validator(new PlayerValidator(new ServerTerrainView(chunk_manager)));
+            clients.add(client);
+        }
+    }
+
     private void poll_pending_inputs(){
         InputRequest request;
-
         while ((request = pending_input_requests.poll()) != null){
-            clients.get(request.client_id()).set_last_received_input(request.input());
+            ServerClientConnection c = clients.get(request.client_id());
+            c.set_last_received_input(request.input());
+            PlayerValidator v = c.get_player().get_validator();
+            if (v != null) v.note_input(request.input());
         }
     }
 
     private void poll_pending_player_data(){
         PlayerDataRequest request;
-
         while ((request = pending_player_data_requests.poll()) != null){
-            clients.get(request.client_id()).get_player().update(request.data());
+            ServerClientConnection client_connection = clients.get(request.client_id());
+            ServerPlayer player = client_connection.get_player();
+
+            PlayerValidator.Result result = player.get_validator().validate(request.data());
+            player.update(result.data());                       // server always stores the verified version
+            if (result.corrected())
+                client_connection.receive_corrected_player_data(result.data());
         }
     }
 
-    @Override
-    public void create_remote_client(){
-        // Will implement when I start doing networking
+    public void connect_remote_client(RemoteClientConnection client_connection){
+        pending_clients.add(client_connection);
     }
 
     public void create_host_client(Client client){
-        pending_clients.add(new HostClient(this, client));
+        pending_clients.add(new HostClientConnection(this, client));
     }
 
     @Override
@@ -140,7 +160,9 @@ public class HostServer implements Server, Runnable {
         poll_requested_chunks();
         poll_pending_player_data();
 
-        for (ServerClient client : clients){
+        for (ServerClientConnection client : clients){
+            client.update_tick();
+
             if (client.get_player().get_data() != null){
                 Vector2f player_pos = new Vector2f(
                         client.get_player().get_data().x(),
@@ -152,6 +174,7 @@ public class HostServer implements Server, Runnable {
         }
     }
 
+    @Override
     public void stop() {
         running = false;
 

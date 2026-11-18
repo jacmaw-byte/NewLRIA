@@ -9,13 +9,13 @@ import org.game.scheisseRenderer.mainRenderer.MainRenderer;
 import org.game.scheisseRenderer.UI.UI;
 import org.game.server.client.Client;
 import org.game.server.server.HostServer;
+import org.game.server.server.Server;
 import org.joml.Vector2f;
 
 import java.awt.*;
 
 public class Main {
 
-    public static HostServer server;
     public static GameUI ui;
 
     public static void main(String[] args){
@@ -31,7 +31,5 @@ public class Main {
         });
 
         MainRenderer.get_instance().start_render_loop();
-        if (server != null)
-            server.stop();
     }
 }
