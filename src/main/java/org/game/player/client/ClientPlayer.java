@@ -116,7 +116,8 @@ public class ClientPlayer {
                 20,
                 20,
                 speed > base_speed,
-                collider.is_grounded()
+                collider.is_grounded(),
+                flipped
         );
     }
 

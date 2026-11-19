@@ -2,6 +2,7 @@ package org.game.server.server;
 
 import org.game.chunkManager.server.ChunkData;
 import org.game.chunkManager.server.ServerChunkManager;
+import org.game.player.common.MultiplayerPlayer;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.player.common.PlayerValidator;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static org.Constants.TICK_TIME;
+
 public class HostServer implements Server, Runnable {
     private final List<ServerClientConnection> clients = new ArrayList<>();
     private final Queue<ServerClientConnection> pending_clients = new ConcurrentLinkedQueue<>();
@@ -38,7 +41,6 @@ public class HostServer implements Server, Runnable {
 
     private RemoteConnectionsHandler remote_connections_handler;
 
-    private static final double TICK_TIME = 1.0 / 20.0;
     private volatile boolean running;
 
     private Thread server_thread;
@@ -160,6 +162,8 @@ public class HostServer implements Server, Runnable {
         poll_requested_chunks();
         poll_pending_player_data();
 
+        ArrayList<MultiplayerPlayer> players = new ArrayList<>();
+
         for (ServerClientConnection client : clients){
             client.update_tick();
 
@@ -170,7 +174,22 @@ public class HostServer implements Server, Runnable {
                 );
 
                 chunk_manager.generate_chunks_around_player(player_pos);
+
+                players.add(new MultiplayerPlayer("player", client.get_player().get_uuid(), player_pos, client.get_player().get_data().flipped()));
             }
+        }
+
+        for (ServerClientConnection client : clients) {
+            ArrayList<MultiplayerPlayer> other_players = new ArrayList<>();
+
+            for (MultiplayerPlayer player : players) {
+                // Don't send the client their own player
+                if (player.uuid() != client.get_player().get_uuid()) {
+                    other_players.add(player);
+                }
+            }
+
+            client.receive_other_players(other_players);
         }
     }
 

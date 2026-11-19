@@ -8,5 +8,5 @@ public class Constants {
     public static int SCR_WIDTH = 1920;
     public static int SCR_HEIGHT = 1080;
 
-
+    public final static double TICK_TIME = 1 / 20.0;
 }

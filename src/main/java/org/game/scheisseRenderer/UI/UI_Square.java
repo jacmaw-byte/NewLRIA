@@ -1,6 +1,6 @@
 package org.game.scheisseRenderer.UI;
 
-import org.game.scheisseRenderer.Texture;
+import org.game.scheisseRenderer.image.Texture;
 import org.game.scheisseRenderer.image.Sprite;
 import org.joml.Vector2f;
 import org.types.ColourA;

@@ -3,7 +3,7 @@ package org.game.player.server.inventory.items;
 import org.game.cell.Cell;
 import org.game.cell.Cells;
 import org.game.player.server.inventory.Item;
-import org.game.scheisseRenderer.Texture;
+import org.game.scheisseRenderer.image.Texture;
 import org.game.scheisseRenderer.image.Sprite;
 import org.joml.Vector2f;
 

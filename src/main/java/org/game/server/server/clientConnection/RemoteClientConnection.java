@@ -2,6 +2,7 @@
 package org.game.server.server.clientConnection;
 
 import org.game.chunkManager.server.ChunkData;
+import org.game.player.common.MultiplayerPlayer;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.player.server.ServerPlayer;
@@ -12,6 +13,7 @@ import org.game.server.server.HostServer;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class RemoteClientConnection implements ServerClientConnection {
@@ -133,6 +135,11 @@ public class RemoteClientConnection implements ServerClientConnection {
     @Override
     public void update_tick() {
         send(new TickMessage());
+    }
+
+    @Override
+    public void receive_other_players(ArrayList<MultiplayerPlayer> players) {
+        send(new OtherPlayersMessage(players));
     }
 
     public void close() {

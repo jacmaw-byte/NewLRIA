@@ -1,6 +1,5 @@
 package org.game.scheisseRenderer.image;
 
-import org.game.scheisseRenderer.Texture;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -12,7 +11,7 @@ import org.joml.Vector2i;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-// This is only cpu side, so it will be written to the render screen from the cpu
+// This is only cpu side, so it will be written to the texture from the cpu
 public class SpriteCPU {
     public int width;
     public int height;
@@ -41,6 +40,15 @@ public class SpriteCPU {
             this.height = height.get(0);
         }
 
+    }
+
+    public SpriteCPU(SpriteCPU sprite) {
+        this.width = sprite.width;
+        this.height = sprite.height;
+
+        image_raw = MemoryUtil.memAlloc(width * height * desired_channels);
+
+        MemoryUtil.memCopy(sprite.image_raw, image_raw);
     }
 
     // This cuts out a rect from another SpriteCPU
@@ -159,5 +167,6 @@ public class SpriteCPU {
 
     public void destroy(){
         STBImage.stbi_image_free(image_raw);
+
     }
 }

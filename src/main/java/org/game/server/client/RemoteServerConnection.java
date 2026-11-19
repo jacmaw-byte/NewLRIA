@@ -1,6 +1,7 @@
 package org.game.server.client;
 
 import org.game.chunkManager.server.ChunkData;
+import org.game.player.common.MultiplayerPlayer;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.server.requests.ChunkRequest;
@@ -12,6 +13,7 @@ import org.joml.Vector2i;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class RemoteServerConnection implements Server {
     private int port;
@@ -72,9 +74,18 @@ public class RemoteServerConnection implements Server {
         }
     }
 
-    // Process messages received from the client
+    // Process messages received from the server
     private void handleMessage(Object message) {
-        if (message instanceof ChunkMessage(ChunkData chunkData)) {
+
+        if (message instanceof TickMessage) {
+            client.server_tick();
+        }
+
+        else if (message instanceof OtherPlayersMessage(ArrayList<MultiplayerPlayer> players)) {
+            client.receive_players(players);
+        }
+
+        else if (message instanceof ChunkMessage(ChunkData chunkData)) {
             client.receive_chunk(chunkData);
         }
 
@@ -87,9 +98,7 @@ public class RemoteServerConnection implements Server {
             System.out.println("Corrected player data");
         }
 
-        else if (message instanceof TickMessage) {
-            client.server_tick();
-        }
+
     }
 
     public synchronized void send(Object message) {

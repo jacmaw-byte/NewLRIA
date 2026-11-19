@@ -1,8 +1,7 @@
 package org.game.scheisseRenderer.image;
 
-import org.game.scheisseRenderer.ShaderClass;
-import org.game.scheisseRenderer.Texture;
-import org.game.scheisseRenderer.Transform;
+import org.game.scheisseRenderer.mainRenderer.ShaderClass;
+import org.types.Transform;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;

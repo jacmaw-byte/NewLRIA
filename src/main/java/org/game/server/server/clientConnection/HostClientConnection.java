@@ -1,12 +1,14 @@
 package org.game.server.server.clientConnection;
 
 import org.game.chunkManager.server.ChunkData;
+import org.game.player.common.MultiplayerPlayer;
 import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.player.server.ServerPlayer;
 import org.game.server.client.Client;
 import org.game.server.server.HostServer;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 // The server's interface with the clients
@@ -40,6 +42,11 @@ public class HostClientConnection implements ServerClientConnection {
     @Override
     public void update_tick() {
         client.server_tick();
+    }
+
+    @Override
+    public void receive_other_players(ArrayList<MultiplayerPlayer> players) {
+        client.receive_players(players);
     }
 
     @Override

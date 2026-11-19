@@ -1,6 +1,5 @@
 package org.game.scheisseRenderer.image;
 
-import org.game.scheisseRenderer.Texture;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.joml.Vector2f;

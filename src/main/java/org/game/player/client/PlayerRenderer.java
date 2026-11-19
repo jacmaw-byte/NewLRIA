@@ -1,6 +1,6 @@
 package org.game.player.client;
 
-import org.game.scheisseRenderer.Texture;
+import org.game.scheisseRenderer.image.Texture;
 
 import static org.Constants.*;
 

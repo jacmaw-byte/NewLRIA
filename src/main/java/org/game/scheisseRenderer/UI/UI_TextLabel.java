@@ -1,6 +1,6 @@
 package org.game.scheisseRenderer.UI;
 
-import org.game.scheisseRenderer.TextRenderer;
+import org.game.scheisseRenderer.image.TextRenderer;
 import org.game.scheisseRenderer.UI.config.UI_Config;
 import org.joml.Vector2f;
 

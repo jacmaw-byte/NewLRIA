@@ -1,7 +1,7 @@
 package org.game.player.common;
 
 import org.game.player.client.TerrainView;
-import org.game.scheisseRenderer.Texture;
+import org.game.scheisseRenderer.image.Texture;
 import org.game.scheisseRenderer.image.SpriteCPU;
 import org.types.ColourA;
 import org.joml.Vector2f;

@@ -1,4 +1,4 @@
-package org.game.scheisseRenderer;
+package org.game.scheisseRenderer.image;
 
 import org.lwjgl.system.MemoryUtil;
 import org.types.Colour;
@@ -92,6 +92,10 @@ public class Texture {
     }
 
     public void set_pixel(int x, int y, Colour colour){
+        // Bounds checking
+        if (x > width || x < 0 || y > height || y < 0) {
+            return;
+        }
         int index = (y * width + x) * channels;
 
         data.put(index, (byte) colour.r());
@@ -101,6 +105,11 @@ public class Texture {
     }
 
     public void set_pixel(int x, int y, ColourA colour){
+        // Bounds checking
+        if (x > width || x < 0 || y > height || y < 0) {
+            return;
+        }
+
         int index = (y * width + x) * channels;
 
         data.put(index, (byte) colour.r());

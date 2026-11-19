@@ -84,7 +84,7 @@ public class PlayerValidator {
 
         // Overwrite fields the server can compute itself.
         if (grounded == player_data.grounded()) return new Result(player_data, false);
-        return new Result(player_data.with_state(player_data.x(), player_data.y(), player_data.velocity_x(), player_data.velocity_y(), grounded), false);
+        return new Result(player_data.with_state(player_data.x(), player_data.y(), player_data.velocity_x(), player_data.velocity_y(), grounded, collider.is_flipped()), false);
     }
 
     private Result reject(PlayerData d) {
@@ -93,6 +93,6 @@ public class PlayerValidator {
         probe.set(x, y);
         collider.update(probe);
         trusted_nanos = System.nanoTime();   // don't punish the next frame for time spent rejected
-        return new Result(d.with_state(x, y, 0f, 0f, collider.is_grounded()), true);
+        return new Result(d.with_state(x, y, 0f, 0f, collider.is_grounded(), collider.is_flipped()), true);
     }
 }

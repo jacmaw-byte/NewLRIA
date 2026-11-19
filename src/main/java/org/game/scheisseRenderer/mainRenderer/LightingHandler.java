@@ -1,4 +1,6 @@
-package org.game.scheisseRenderer;
+package org.game.scheisseRenderer.mainRenderer;
+
+import org.game.scheisseRenderer.image.Texture;
 
 import java.nio.ByteBuffer;
 

@@ -1,5 +1,6 @@
-package org.game.scheisseRenderer;
+package org.game.scheisseRenderer.mainRenderer;
 
+import org.game.scheisseRenderer.image.Texture;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import org.types.Colour;

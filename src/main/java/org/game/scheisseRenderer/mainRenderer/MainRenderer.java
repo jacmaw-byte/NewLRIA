@@ -3,11 +3,8 @@ package org.game.scheisseRenderer.mainRenderer;
 import org.Constants;
 import org.game.Time;
 import org.game.input.Input;
-import org.game.scheisseRenderer.LightingHandler;
-import org.game.scheisseRenderer.PracticalScreen;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.Callback;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
