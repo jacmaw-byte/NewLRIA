@@ -1,6 +1,6 @@
 package org.game.cell;
 
-import org.game.scheisseRenderer.Texture;
+import org.game.scheisseRenderer.image.Texture;
 import org.game.terrain.OtherNoise;
 import org.types.Colour;
 

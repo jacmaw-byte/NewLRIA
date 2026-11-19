@@ -12,12 +12,6 @@ import org.joml.Vector2i;
 import static org.Constants.CHUNK_SIZE;
 
 public class ClientChunk {
-    private final static int GRASS_HEIGHT_VARIANCE = 1;
-    private final static int GRASS_DEPTH = 4;
-    private final static float STONE_CHANCE_FACTOR = 0.1f;
-
-    private final static float IRON_ORE_THRESHOLD = 0.99f;
-
     private final Cell[] cells = new Cell[CHUNK_SIZE * CHUNK_SIZE];
 
     private final Vector2i chunk_position;

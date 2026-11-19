@@ -3,12 +3,10 @@ package org.game.scheisseRenderer.UI;
 
 import org.game.input.Input;
 import org.game.scheisseRenderer.UI.menus.GameMenu;
-import org.game.scheisseRenderer.UI.menus.GameUI;
 import org.game.scheisseRenderer.image.SpriteAtlas;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class UI {
     private HashMap<String, UI_Menu> menus;
@@ -48,7 +46,7 @@ public class UI {
 
         hovered_element = find_hovered_element();
 
-        if (hovered_element instanceof UI_InputField<?>) {
+        if (hovered_element instanceof UI_TextInputField<?>) {
             Input.set_cursor(Input.ibeam_cursor);
         }
         else {

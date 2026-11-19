@@ -1,7 +1,7 @@
 package org.game.terrain;
 
 public class OtherNoise {
-    private static int seed;
+    private static int seed = 1337;
 
     public static void set_seed(int seed) {
         OtherNoise.seed = seed;

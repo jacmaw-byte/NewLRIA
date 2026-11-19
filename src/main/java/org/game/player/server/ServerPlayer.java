@@ -1,6 +1,7 @@
 package org.game.player.server;
 
 import org.game.player.common.PlayerData;
+import org.game.player.common.PlayerValidator;
 
 import java.util.UUID;
 
@@ -20,6 +21,10 @@ public class ServerPlayer {
     public PlayerData get_data() {
         return data;
     }
+
+    private PlayerValidator validator;
+    public void set_validator(PlayerValidator v) { validator = v; }
+    public PlayerValidator get_validator() { return validator; }
 
     public UUID get_uuid() {
         return uuid;

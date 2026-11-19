@@ -4,14 +4,13 @@ import org.game.input.Input;
 import org.game.input.InputCondition;
 import org.game.scheisseRenderer.UI.containers.OutputContainer;
 import org.game.scheisseRenderer.UI.containers.OutputTypes;
-import org.game.scheisseRenderer.image.Sprite;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.types.ColourA;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class UI_InputField<T extends OutputTypes> extends UI_Element {
+public class UI_TextInputField<T extends OutputTypes> extends UI_Element {
     private OutputContainer<T> output;
     private UI_TextLabel text;
     private UI_Image background;
@@ -20,7 +19,7 @@ public class UI_InputField<T extends OutputTypes> extends UI_Element {
     private int padding;
     private boolean selected;
 
-    public UI_InputField(
+    public UI_TextInputField(
             String name,
             Vector2f position,
             Vector2f dimensions,

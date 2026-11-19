@@ -1,10 +1,9 @@
-package org.game.scheisseRenderer;
+package org.game.scheisseRenderer.mainRenderer;
 
 import org.game.cell.Cell;
 import org.game.chunkManager.client.ClientChunk;
-import org.game.chunkManager.server.ServerChunk;
 import org.game.player.client.Camera;
-import org.game.scheisseRenderer.mainRenderer.MainRenderer;
+import org.game.scheisseRenderer.image.Texture;
 import org.game.server.client.Client;
 import org.joml.Vector2i;
 

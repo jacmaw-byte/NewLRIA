@@ -1,22 +1,24 @@
-package org.game.server.server.clientInterface;
+package org.game.server.server.clientConnection;
 
 import org.game.chunkManager.server.ChunkData;
-import org.game.chunkManager.server.ServerChunk;
+import org.game.player.common.MultiplayerPlayer;
+import org.game.player.common.PlayerData;
 import org.game.player.common.PlayerInput;
 import org.game.player.server.ServerPlayer;
 import org.game.server.client.Client;
 import org.game.server.server.HostServer;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 // The server's interface with the clients
-public class HostClient implements ServerClient {
+public class HostClientConnection implements ServerClientConnection {
     private volatile PlayerInput last_received_input;
     private ServerPlayer player;
     private Client client;
     private HostServer server;
 
-    public HostClient(HostServer server, Client client){
+    public HostClientConnection(HostServer server, Client client){
         this.server = server;
         this.client = client;
 
@@ -31,6 +33,21 @@ public class HostClient implements ServerClient {
 
     @Override
     public void receive_chunk(ChunkData chunk) { client.receive_chunk(chunk); }
+
+    @Override
+    public void receive_corrected_player_data(PlayerData data) {
+        client.receive_player_data(data);
+    }
+
+    @Override
+    public void update_tick() {
+        client.server_tick();
+    }
+
+    @Override
+    public void receive_other_players(ArrayList<MultiplayerPlayer> players) {
+        client.receive_players(players);
+    }
 
     @Override
     public PlayerInput get_last_received_input() { return last_received_input; }

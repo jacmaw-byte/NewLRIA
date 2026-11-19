@@ -1,4 +1,4 @@
-package org.game.scheisseRenderer;
+package org.game.scheisseRenderer.mainRenderer;
 
 import org.joml.Matrix3f;
 

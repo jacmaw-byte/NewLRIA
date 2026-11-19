@@ -1,4 +1,4 @@
-package org.game.scheisseRenderer;
+package org.types;
 
 import org.Constants;
 import org.joml.*;

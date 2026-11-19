@@ -1,5 +1,7 @@
 package org.game.player.common;
 
+import java.io.Serializable;
+
 public record PlayerInput(
         boolean left,
         boolean right,
@@ -7,4 +9,4 @@ public record PlayerInput(
         boolean up,
         boolean down,
         boolean sprint
-) {}
+) implements Serializable {}

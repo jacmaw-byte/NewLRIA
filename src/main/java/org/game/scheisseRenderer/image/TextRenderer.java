@@ -1,7 +1,8 @@
 
-package org.game.scheisseRenderer;
+package org.game.scheisseRenderer.image;
 
 import org.Constants;
+import org.game.scheisseRenderer.mainRenderer.ShaderClass;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
